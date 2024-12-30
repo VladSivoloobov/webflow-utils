@@ -1,0 +1,25 @@
+{
+  "type": "module",
+  "name": "webflow-utils",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "pull": "node pull.js",
+    "push": "node push.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "blessed": "^0.1.81",
+    "chalk": "^5.4.1",
+    "clear": "^0.1.0",
+    "clui": "^0.3.6",
+    "config": "^3.3.12",
+    "figlet": "^1.8.0",
+    "inquirer": "^12.3.0",
+    "minimist": "^1.2.8"
+  }
+}
