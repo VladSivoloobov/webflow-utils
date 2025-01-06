@@ -1,5 +1,3 @@
-![image](https://github.com/user-attachments/assets/c4bddd54-fd2e-429f-8bd7-6331edc5e6a9)# Webflow Utility
-
 Утилита для автоматизации работы с эмбедами Webflow. Она позволяет:
 
 - Вытягивать эмбеды из дизайнера Webflow в ваш редактор кода.
@@ -11,6 +9,7 @@
 - `npm run push` — отправляет модифицированные эмбеды обратно в Webflow.
 
 После ввода любой из команд вас попросят ввести страницы, можно ввести их по отдельности, либо использовать символ астерикса (*), чтобы получить все страницы в проекте.
+![image](https://github.com/user-attachments/assets/c4bddd54-fd2e-429f-8bd7-6331edc5e6a9)# Webflow Utility
 
 ⚠️ **Важно:**
 
