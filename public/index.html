@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Webflow Utils</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./style/index.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">Webflow Utils</a>
+      </div>
+    </nav>
+
+    <div class="container-fluid d-flex p-0" style="height: calc(100vh - 56px)">
+      <!-- Sidebar -->
+      <div class="col-md-3 col-lg-2 sidebar p-3 bg-light">
+        <h5>Расширения</h5>
+        <ul id="extensions-list" class="list-unstyled">
+          <!-- Сюда будут подгружаться элементы -->
+          <li class="loading">⏳ Загрузка...</li>
+        </ul>
+      </div>
+
+      <!-- Main Content -->
+      <div class="col p-4">
+        <h2 id="selected-extension-title">Выберите расширение</h2>
+        <p id="selected-extension-desc">
+          Описание выбранного расширения появится здесь.
+        </p>
+
+        <!-- Контейнер для форм -->
+        <div id="extension-fields" class="mt-4"></div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS + Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="./script/index.js"></script>
+  </body>
+</html>

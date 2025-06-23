@@ -1,0 +1,46 @@
+body {
+  height: 100vh;
+}
+.sidebar {
+  border-right: 1px solid #ddd;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.extension-item {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  transition: background-color 0.2s;
+}
+
+.extensions-list {
+  gap: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.extension-item:hover,
+.extension-item.active {
+  background-color: #e9ecef;
+}
+
+.extension-item img {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+  object-fit: contain;
+}
+
+#selected-extension-title {
+  font-size: 1.5rem;
+}
+
+.extension-item {
+  transition: transform 0.2s ease, background-color 0.2s;
+}
+
+.extension-item.animate__animated {
+  animation-duration: 0.5s;
+}
