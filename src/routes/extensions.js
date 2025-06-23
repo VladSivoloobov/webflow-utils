@@ -12,10 +12,7 @@ export async function getExtensions(req, res) {
   return res
     .json(
       extensions.map((extension) => ({
-        title: extension.title,
-        description: extension.description,
-        icon: extension.icon,
-        inputs: extension.inputs,
+        ...extension,
       }))
     )
     .status(200);

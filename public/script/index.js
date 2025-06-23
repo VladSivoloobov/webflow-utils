@@ -121,7 +121,53 @@ function renderExtensionFields(fields) {
     }
 
     container.appendChild(group);
+
+    // Добавляем кнопку
+    const buttonGroup = document.createElement('div');
+    buttonGroup.className = 'mb-3';
+
+    const button = document.createElement('button');
+    button.type = 'submit';
+    button.textContent = 'Выполнить';
+    button.className = 'btn btn-primary';
+
+    buttonGroup.appendChild(button);
+    container.appendChild(buttonGroup);
   });
+
+  container.onsubmit = async function (e) {
+    e.preventDefault();
+
+    const extTitle = document.getElementById(
+      'selected-extension-title'
+    ).textContent;
+
+    const formData = {};
+    const inputs = container.querySelectorAll('input, select');
+    inputs.forEach((input) => {
+      const name = input.name || input.id.replace(/^field-/, '');
+      formData[name] = input.type === 'checkbox' ? input.checked : input.value;
+    });
+
+    try {
+      const res = await fetch(`${DOMAIN}/run/${extTitle}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (!res.ok) throw new Error('Ошибка выполнения расширения');
+
+      const result = await res.json();
+      console.log('Результат:', result);
+
+      // Предполагается, что result содержит Table.data
+      renderExtensionResult(result?.table);
+    } catch (err) {
+      alert('Ошибка: ' + err.message);
+      console.error(err);
+    }
+  };
 }
 
 function showExtensionDetails(extension, element) {
@@ -150,3 +196,44 @@ function showExtensionDetails(extension, element) {
 fetchExtensions().then((data) => {
   if (data) renderExtensions(data);
 });
+
+function renderExtensionResult(tableData) {
+  const container = document.getElementById('extension-result');
+  container.innerHTML = ''; // очистка предыдущего результата
+
+  if (!tableData || !Array.isArray(tableData) || tableData.length === 0) {
+    container.innerHTML = '<p>Нет данных для отображения.</p>';
+    return;
+  }
+
+  const table = document.createElement('table');
+  table.className = 'table table-bordered table-striped mt-3';
+
+  const thead = document.createElement('thead');
+  const headerRow = document.createElement('tr');
+
+  // Заголовки
+  tableData[0].forEach((header) => {
+    const th = document.createElement('th');
+    th.textContent = header;
+    headerRow.appendChild(th);
+  });
+
+  thead.appendChild(headerRow);
+  table.appendChild(thead);
+
+  // Тело таблицы
+  const tbody = document.createElement('tbody');
+  for (let i = 1; i < tableData.length; i++) {
+    const row = document.createElement('tr');
+    tableData[i].forEach((cell) => {
+      const td = document.createElement('td');
+      td.textContent = cell;
+      row.appendChild(td);
+    });
+    tbody.appendChild(row);
+  }
+
+  table.appendChild(tbody);
+  container.appendChild(table);
+}
