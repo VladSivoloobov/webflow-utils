@@ -1,5 +1,6 @@
 import Extension from '../../classes/Extension.js';
 import Input from '../../classes/inputs/Input.js';
+import Submit from '../../classes/inputs/Submit.js';
 
 export default class General extends Extension {
   title = 'Общее';
@@ -12,5 +13,6 @@ export default class General extends Extension {
     new Input('xsrf-token', 'Введите XSRF-TOKEN'),
     new Input('project-id', 'Введите project-id'),
     new Input('project-name', 'Введите имя проекта'),
+    new Submit('general-ready', 'Готово'),
   ];
 }

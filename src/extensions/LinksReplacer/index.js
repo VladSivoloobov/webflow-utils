@@ -4,12 +4,25 @@ import FileInteractions from '../../classes/FileInteractions.js';
 import path from 'path';
 import Table from '../../classes/outputs/Table.js';
 import Link from '../../classes/components/Link.js';
+import Input from '../../classes/inputs/Input.js';
+import Submit from '../../classes/inputs/Submit.js';
 
+/**
+ * Расширение для автоматического изменения ссылок по всему проекту.
+ *
+ * Предназначено для массовой замены, обновления и анализа ссылок в DOM-структуре Webflow-сайта.
+ */
 export default class LinksExtension extends Extension {
-  description = 'Плагин для автоматического изменения ссылок по всему проекту';
+  description =
+    'Плагин для автоматического изменения ссылок по всему проекту. Позволяет находить и заменять ссылки во всех файлах проекта.';
   title = 'Links Replacer';
   icon = 'LinksReplacer.png';
   name = 'links-extension';
+
+  inputs = [
+    new Input('links-search', 'Поиск страницы'),
+    new Submit('links-submit', 'Готово'),
+  ];
 
   constructor() {
     super();
@@ -17,19 +30,18 @@ export default class LinksExtension extends Extension {
       path.resolve(Extension.downloadFolder)
     );
 
-    console.log(files);
+    this.output = [
+      new Table([
+        ['Страница'],
+        ...files.map((element) => {
+          const key = Object.keys(element)[0];
+          const link = new Link(key, '?' + key);
 
-    console.log();
-
-    this.output = new Table([
-      ['Страница'],
-      ...files.map((element) => {
-        const key = Object.keys(element)[0];
-        const link = new Link(key, '?' + key);
-
-        return [link];
-      }),
-    ]);
+          return [link];
+        }),
+      ]),
+      new Table(['Тест второй таблицы', 'Тестик']),
+    ];
   }
 
   #readFile() {}

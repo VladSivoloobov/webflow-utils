@@ -53,14 +53,15 @@ export function renderExtensions(data) {
 /**
  * Отрисовывает поля ввода для выбранного расширения.
  *
- * Поддерживает типы: text, number, checkbox, select.
- * При неизвестном типе выводит предупреждение.
+ * Поддерживает типы: text, number, checkbox, select, submit.
+ * Для типа submit метка (label) не отображается.
  *
  * @param {Array<Object>} fields - Массив объектов с описанием полей ввода.
  * @param {string} fields[].label - Текст метки (label).
  * @param {string} fields[].name - Имя поля.
- * @param {string} fields[].type - Тип поля: text, number, checkbox, select.
+ * @param {string} fields[].type - Тип поля: text, number, checkbox, select, submit.
  * @param {Array<string>} [fields[].options] - Список опций для типа select.
+ * @param {Function} [fields[].onSubmit] - Callback для типа submit. Принимает собранные данные формы.
  */
 export function renderExtensionFields(fields) {
   const container = document.getElementById('extension-fields');
@@ -71,25 +72,30 @@ export function renderExtensionFields(fields) {
     const group = document.createElement('div');
     group.className = 'mb-3';
 
-    const label = document.createElement('label');
-    label.textContent = field.label;
-    label.setAttribute('for', `field-${field.name}`);
-    label.className = 'form-label';
-    group.appendChild(label);
-
     let input;
 
     switch (field.type) {
       case 'text':
       case 'number':
+        // Создаем label
+        const label = document.createElement('label');
+        label.textContent = field.label;
+        label.setAttribute('for', `field-${field.name}`);
+        label.className = 'form-label';
+        group.appendChild(label);
+
         input = document.createElement('input');
         input.type = field.type;
         input.id = `field-${field.name}`;
         input.name = field.name;
         input.className = 'form-control';
+        group.appendChild(input);
         break;
 
       case 'checkbox':
+        const checkLabel = document.createElement('label');
+        checkLabel.className = 'form-check-label';
+
         input = document.createElement('div');
         input.className = 'form-check';
 
@@ -99,18 +105,22 @@ export function renderExtensionFields(fields) {
         checkbox.name = field.name;
         checkbox.className = 'form-check-input';
 
-        const checkLabel = document.createElement('label');
         checkLabel.textContent = field.label;
         checkLabel.setAttribute('for', `field-${field.name}`);
-        checkLabel.className = 'form-check-label';
 
         input.appendChild(checkbox);
         input.appendChild(checkLabel);
 
-        group.removeChild(label);
+        group.appendChild(input);
         break;
 
       case 'select':
+        const selectLabel = document.createElement('label');
+        selectLabel.textContent = field.label;
+        selectLabel.setAttribute('for', `field-${field.name}`);
+        selectLabel.className = 'form-label';
+        group.appendChild(selectLabel);
+
         input = document.createElement('select');
         input.id = `field-${field.name}`;
         input.name = field.name;
@@ -122,17 +132,42 @@ export function renderExtensionFields(fields) {
           opt.textContent = option;
           input.appendChild(opt);
         });
+        group.appendChild(input);
+        break;
+
+      case 'submit':
+        input = document.createElement('button');
+        input.type = 'button';
+        input.className = 'btn btn-primary w-100';
+        input.textContent = field.label || 'Выполнить';
+
+        input.onclick = () => {
+          const formElements = document.querySelectorAll(
+            '#extension-fields input, #extension-fields select, #extension-fields textarea'
+          );
+          const formData = {};
+
+          formElements.forEach((el) => {
+            const name = el.name.replace('field-', '');
+            if (el.type === 'checkbox') {
+              formData[name] = el.checked;
+            } else {
+              formData[name] = el.value;
+            }
+          });
+
+          if (typeof field.onSubmit === 'function') {
+            field.onSubmit(formData);
+          } else {
+            console.warn('Функция onSubmit не определена для submit-поля');
+          }
+        };
+        group.appendChild(input); // Добавляем кнопку напрямую, без label
         break;
 
       default:
         console.warn(`Неизвестный тип поля: ${field.type}`);
         return;
-    }
-
-    if (field.type !== 'checkbox') {
-      group.appendChild(input);
-    } else {
-      group.appendChild(input);
     }
 
     container.appendChild(group);
@@ -144,6 +179,7 @@ export function renderExtensionFields(fields) {
  *
  * Если данные отсутствуют — выводит сообщение "Нет данных для отображения".
  * Поддерживает ячейки с текстом и ссылками.
+ * Клик по заголовку таблицы позволяет сворачивать/разворачивать содержимое.
  *
  * @param {Object} output - Результат выполнения расширения.
  * @param {Array<Array<string|Object>>} output.data - Двумерный массив данных для отображения.
@@ -164,6 +200,10 @@ export function renderExtensionResult(output, extension) {
   table.className = 'table table-bordered table-striped mt-3';
 
   const thead = document.createElement('thead');
+  thead.className = 'clickable';
+  thead.style.cursor = 'pointer';
+  thead.style.userSelect = 'none';
+
   const headerRow = document.createElement('tr');
 
   tableData[0].forEach((header) => {
@@ -203,6 +243,12 @@ export function renderExtensionResult(output, extension) {
 
     tbody.appendChild(row);
   }
+
+  // Событие клика на thead
+  thead.addEventListener('click', () => {
+    const isVisible = !tbody.hidden;
+    tbody.hidden = isVisible;
+  });
 
   table.appendChild(tbody);
   container.appendChild(table);
