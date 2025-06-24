@@ -30,18 +30,15 @@ export default class LinksExtension extends Extension {
       path.resolve(Extension.downloadFolder)
     );
 
-    this.output = [
-      new Table([
-        ['Страница'],
-        ...files.map((element) => {
-          const key = Object.keys(element)[0];
-          const link = new Link(key, '?' + key);
+    this.output = new Table([
+      ['Страница'],
+      ...files.map((element) => {
+        const key = Object.keys(element)[0];
+        const link = new Link(key, '?' + key);
 
-          return [link];
-        }),
-      ]),
-      new Table(['Тест второй таблицы', 'Тестик']),
-    ];
+        return [link];
+      }),
+    ]);
   }
 
   #readFile() {}

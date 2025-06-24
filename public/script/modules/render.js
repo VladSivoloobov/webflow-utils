@@ -53,7 +53,7 @@ export function renderExtensions(data) {
 /**
  * Отрисовывает поля ввода для выбранного расширения.
  *
- * Поддерживает типы: text, number, checkbox, select, submit.
+ * Поддерживает типы: text, number, checkbox, select, submit, password.
  * Для типа submit метка (label) не отображается.
  *
  * @param {Array<Object>} fields - Массив объектов с описанием полей ввода.
@@ -76,6 +76,7 @@ export function renderExtensionFields(fields) {
 
     switch (field.type) {
       case 'text':
+      case 'password':
       case 'number':
         // Создаем label
         const label = document.createElement('label');
@@ -138,7 +139,7 @@ export function renderExtensionFields(fields) {
       case 'submit':
         input = document.createElement('button');
         input.type = 'button';
-        input.className = 'btn btn-primary w-100';
+        input.className = 'btn btn-primary';
         input.textContent = field.label || 'Выполнить';
 
         input.onclick = () => {

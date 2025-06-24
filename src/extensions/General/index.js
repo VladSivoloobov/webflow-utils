@@ -1,18 +1,17 @@
 import Extension from '../../classes/Extension.js';
 import Input from '../../classes/inputs/Input.js';
 import Submit from '../../classes/inputs/Submit.js';
+import Password from '../../classes/inputs/Password.js';
 
 export default class General extends Extension {
-  title = 'Общее';
-  description = 'Здесь вы можете настроить приложение';
+  title = 'Авторизация';
+  description = 'Здесь вы можете авторизоваться в Webflow.';
   icon = 'General.svg';
   name = 'general';
 
   inputs = [
-    new Input('cookies', 'Введите ваши куки'),
-    new Input('xsrf-token', 'Введите XSRF-TOKEN'),
-    new Input('project-id', 'Введите project-id'),
-    new Input('project-name', 'Введите имя проекта'),
-    new Submit('general-ready', 'Готово'),
+    new Input('webflow-login', 'Логин'),
+    new Password('webflow-password', 'Пароль'),
+    new Submit('general-ready', 'Войти'),
   ];
 }

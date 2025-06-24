@@ -53,3 +53,7 @@ body {
 .container-fluid {
   overflow: auto;
 }
+
+.btn {
+  width: max-content;
+}
