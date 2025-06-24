@@ -3,6 +3,8 @@ import path from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 import Input from './inputs/Input.js';
 import Output from './outputs/Output.js';
+import chalk from 'chalk';
+import Route from './Route.js';
 
 /**
  * Класс, представляющий расширение приложения.
@@ -81,7 +83,7 @@ export default class Extension {
   /**
    * Дополнительные маршруты или параметры расширения.
    *
-   * @type {any[]}
+   * @type {Route[]}
    */
   routes;
 
@@ -91,6 +93,11 @@ export default class Extension {
    * @type {string}
    */
   category;
+
+  /**
+   * @type {[Extension]}
+   */
+  static importedExtensions;
 
   /**
    * Загружает и возвращает массив всех доступных расширений.
@@ -105,9 +112,17 @@ export default class Extension {
         path.resolve('src', this.extensionFolder, extension, 'index.js')
       );
 
+      console.log(chalk.green(extension, 'OK ✔'));
+
       return (await import(extensionPath)).default;
     });
 
-    return await Promise.all(importedExtensions);
+    const extensions = (await Promise.all(importedExtensions)).map(
+      (extension) => new extension()
+    );
+
+    Extension.importedExtensions = extensions;
+
+    return extensions;
   }
 }

@@ -6,6 +6,7 @@
 
 import { ANIMATION_CLASS, ITEM_ANIMATION, CLICK_ANIMATION } from './config.js';
 import { showExtensionDetails } from './details.js';
+import serverFunctions from './serverFunctions.js';
 
 /**
  * Хранит ссылку на текущий активный элемент (для анимации).
@@ -142,27 +143,9 @@ export function renderExtensionFields(fields) {
         input.className = 'btn btn-primary';
         input.textContent = field.label || 'Выполнить';
 
-        input.onclick = () => {
-          const formElements = document.querySelectorAll(
-            '#extension-fields input, #extension-fields select, #extension-fields textarea'
-          );
-          const formData = {};
+        const func = serverFunctions(field.action);
 
-          formElements.forEach((el) => {
-            const name = el.name.replace('field-', '');
-            if (el.type === 'checkbox') {
-              formData[name] = el.checked;
-            } else {
-              formData[name] = el.value;
-            }
-          });
-
-          if (typeof field.onSubmit === 'function') {
-            field.onSubmit(formData);
-          } else {
-            console.warn('Функция onSubmit не определена для submit-поля');
-          }
-        };
+        input.onclick = func;
         group.appendChild(input); // Добавляем кнопку напрямую, без label
         break;
 

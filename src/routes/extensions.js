@@ -13,16 +13,7 @@ import Extension from '../classes/Extension.js';
  */
 export async function getExtensions(req, res) {
   try {
-    const importedModules = await Extension.getExtensions();
-
-    /**
-     * @type {Extension[]}
-     */
-    const extensions = importedModules.map(
-      (WebflowExtension) => new WebflowExtension()
-    );
-
-    return res.status(200).json(extensions);
+    return res.status(200).json(Extension.importedExtensions);
   } catch (error) {
     console.error('Ошибка при загрузке расширений:', error);
     return res

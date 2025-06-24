@@ -1,5 +1,5 @@
 import displayLogo from './display-logo.js';
-import { pushQuestions } from './push-questions.js';
+import { pushQuestions } from './questions/push-questions.js';
 import chalk from 'chalk';
 
 export const clearLastLine = () => {

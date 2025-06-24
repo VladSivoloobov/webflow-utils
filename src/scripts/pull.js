@@ -1,14 +1,14 @@
 import config from 'config';
 import fs from 'fs';
 import path from 'path';
-import { Webflow } from '../classes/Webflow.js';
+import Webflow from '../classes/webflow/Webflow.js';
 import {
   clearLastLine,
   displayLogoAndDisplayQuestions,
   errorCliMessage,
   successCliMessage,
   tryingCliMessage,
-} from './src/cli/cli.js';
+} from '../CLI/index.js';
 import chalk from 'chalk';
 
 const __dirname = import.meta.dirname;
