@@ -43,6 +43,11 @@ export default class Extension {
    */
   output;
 
+  /**
+   * @type {[any]}
+   */
+  routes;
+
   static async getExtensions() {
     const importedExtensions = this.extensionList.map(async (extension) => {
       const extensionPath = pathToFileURL(

@@ -1,8 +1,28 @@
+/**
+ * @fileoverview
+ * Модуль отвечает за отрисовку элементов интерфейса:
+ * список расширений, поля ввода и результаты выполнения.
+ */
+
 import { ANIMATION_CLASS, ITEM_ANIMATION, CLICK_ANIMATION } from './config.js';
 import { showExtensionDetails } from './details.js';
 
+/**
+ * Хранит ссылку на текущий активный элемент (для анимации).
+ * @type {HTMLElement|null}
+ */
 export let currentActive = null;
 
+/**
+ * Отрисовывает список расширений в интерфейсе.
+ *
+ * Каждому элементу списка применяется анимация появления,
+ * устанавливается обработчик клика для отображения деталей расширения.
+ *
+ * @param {Array<Object>} data - Массив объектов с данными о расширениях.
+ * @param {string} data[].title - Название расширения.
+ * @param {string} [data[].icon] - Имя файла иконки расширения.
+ */
 export function renderExtensions(data) {
   const list = document.getElementById('extensions-list');
   if (!list) return;
@@ -15,7 +35,7 @@ export function renderExtensions(data) {
 
     if (ext.icon) {
       const img = document.createElement('img');
-      img.src = `${ext.iconPath || ''}${ext.icon}`;
+      img.src = `src/icons/extension-icons/${ext.icon}`;
       img.alt = ext.title;
       li.appendChild(img);
     }
@@ -30,10 +50,22 @@ export function renderExtensions(data) {
   });
 }
 
+/**
+ * Отрисовывает поля ввода для выбранного расширения.
+ *
+ * Поддерживает типы: text, number, checkbox, select.
+ * При неизвестном типе выводит предупреждение.
+ *
+ * @param {Array<Object>} fields - Массив объектов с описанием полей ввода.
+ * @param {string} fields[].label - Текст метки (label).
+ * @param {string} fields[].name - Имя поля.
+ * @param {string} fields[].type - Тип поля: text, number, checkbox, select.
+ * @param {Array<string>} [fields[].options] - Список опций для типа select.
+ */
 export function renderExtensionFields(fields) {
   const container = document.getElementById('extension-fields');
-  if (!container || !fields || fields.length === 0) return;
   container.innerHTML = '';
+  if (!container || !fields || fields.length === 0) return;
 
   fields.forEach((field) => {
     const group = document.createElement('div');
@@ -107,6 +139,16 @@ export function renderExtensionFields(fields) {
   });
 }
 
+/**
+ * Отрисовывает результат работы расширения в виде таблицы.
+ *
+ * Если данные отсутствуют — выводит сообщение "Нет данных для отображения".
+ * Поддерживает ячейки с текстом и ссылками.
+ *
+ * @param {Object} output - Результат выполнения расширения.
+ * @param {Array<Array<string|Object>>} output.data - Двумерный массив данных для отображения.
+ * @param {string} extension - Имя расширения, используется для генерации ссылок.
+ */
 export function renderExtensionResult(output, extension) {
   const tableData = output?.data;
   const container = document.getElementById('extension-result');
@@ -143,6 +185,7 @@ export function renderExtensionResult(output, extension) {
       const params = new URLSearchParams({
         extension,
         data: cell.source,
+        action: 'change-page',
       });
 
       if (cell && cell.type === 'link') {
