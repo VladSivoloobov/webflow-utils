@@ -5,6 +5,7 @@ export default class General extends Extension {
   title = 'Общее';
   description = 'Здесь вы можете настроить приложение';
   icon = 'General.svg';
+  name = 'general';
 
   inputs = [
     new Input('cookies', 'Введите ваши куки'),

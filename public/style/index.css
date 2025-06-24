@@ -44,3 +44,12 @@ body {
 .extension-item.animate__animated {
   animation-duration: 0.5s;
 }
+
+.sidebar {
+  position: sticky;
+  top: 0;
+}
+
+.container-fluid {
+  overflow: auto;
+}

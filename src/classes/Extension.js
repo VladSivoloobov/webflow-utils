@@ -13,6 +13,13 @@ export default class Extension {
 
   /**
    * @type {string}
+   * @field
+   * @requires
+   */
+  name;
+
+  /**
+   * @type {string}
    */
   description;
 
