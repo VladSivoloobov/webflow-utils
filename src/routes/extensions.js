@@ -2,6 +2,7 @@ import Extension from '../classes/Extension.js';
 
 export async function getExtensions(req, res) {
   const importedModules = await Extension.getExtensions();
+
   /**
    * @type {[Extension]}
    */

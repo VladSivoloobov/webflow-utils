@@ -7,6 +7,8 @@ const CLICK_ANIMATION = 'animate__rubberBand'; // эффект при клике
 
 let currentActive = null;
 
+console.log(currentActive);
+
 async function fetchExtensions() {
   try {
     const res = await fetch(`${DOMAIN}/extensions`);
@@ -121,53 +123,7 @@ function renderExtensionFields(fields) {
     }
 
     container.appendChild(group);
-
-    // Добавляем кнопку
-    const buttonGroup = document.createElement('div');
-    buttonGroup.className = 'mb-3';
-
-    const button = document.createElement('button');
-    button.type = 'submit';
-    button.textContent = 'Выполнить';
-    button.className = 'btn btn-primary';
-
-    buttonGroup.appendChild(button);
-    container.appendChild(buttonGroup);
   });
-
-  container.onsubmit = async function (e) {
-    e.preventDefault();
-
-    const extTitle = document.getElementById(
-      'selected-extension-title'
-    ).textContent;
-
-    const formData = {};
-    const inputs = container.querySelectorAll('input, select');
-    inputs.forEach((input) => {
-      const name = input.name || input.id.replace(/^field-/, '');
-      formData[name] = input.type === 'checkbox' ? input.checked : input.value;
-    });
-
-    try {
-      const res = await fetch(`${DOMAIN}/run/${extTitle}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-
-      if (!res.ok) throw new Error('Ошибка выполнения расширения');
-
-      const result = await res.json();
-      console.log('Результат:', result);
-
-      // Предполагается, что result содержит Table.data
-      renderExtensionResult(result?.table);
-    } catch (err) {
-      alert('Ошибка: ' + err.message);
-      console.error(err);
-    }
-  };
 }
 
 function showExtensionDetails(extension, element) {
@@ -183,6 +139,9 @@ function showExtensionDetails(extension, element) {
   // Очистка или рендер полей
   renderExtensionFields(extension.inputs);
 
+  // Рендер результата
+  renderExtensionResult(extension.output);
+
   // Эффект нажатия на кнопку
   if (currentActive) {
     currentActive.classList.remove(CLICK_ANIMATION);
@@ -197,7 +156,10 @@ fetchExtensions().then((data) => {
   if (data) renderExtensions(data);
 });
 
-function renderExtensionResult(tableData) {
+function renderExtensionResult(output) {
+  console.log(output);
+  const tableData = output?.data;
+
   const container = document.getElementById('extension-result');
   container.innerHTML = ''; // очистка предыдущего результата
 

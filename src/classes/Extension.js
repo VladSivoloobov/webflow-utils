@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 import Input from './inputs/Input.js';
+import Output from './outputs/Output.js';
 
 export default class Extension {
   static extensionFolder = 'extensions';
@@ -29,6 +30,11 @@ export default class Extension {
    * @type {[Input]}
    */
   inputs;
+
+  /**
+   * @type {[Output]}
+   */
+  output;
 
   static async getExtensions() {
     const importedExtensions = this.extensionList.map(async (extension) => {
