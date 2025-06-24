@@ -86,6 +86,13 @@ export default class Extension {
   routes;
 
   /**
+   * Категория расширения
+   *
+   * @type {string}
+   */
+  category;
+
+  /**
    * Загружает и возвращает массив всех доступных расширений.
    *
    * @returns {Promise<Extension[]>} Массив инстансов расширений.
