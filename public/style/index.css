@@ -1,9 +1,10 @@
 body {
-  height: 100vh;
+  height: calc(100vh - 56px);
+  overflow: hidden;
 }
 .sidebar {
   border-right: 1px solid #ddd;
-  height: 100vh;
+  height: calc(100vh - 56px);
   overflow-y: auto;
 }
 
@@ -56,4 +57,22 @@ body {
 
 .btn {
   width: max-content;
+}
+
+.sidebar {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.05)
+  );
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  color: black;
+  resize: horizontal;
+  overflow: auto;
+}
+
+.extension-item {
+  min-width: max-content;
 }

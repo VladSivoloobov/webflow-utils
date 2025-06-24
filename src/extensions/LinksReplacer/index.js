@@ -20,7 +20,7 @@ export default class LinksExtension extends Extension {
   name = 'links-extension';
 
   inputs = [
-    new Input('links-search', 'Поиск страницы'),
+    new Input('links-search', '🕵️‍♀️ Поиск страницы'),
     new Submit('links-submit', 'Готово'),
   ];
 
