@@ -7,12 +7,12 @@ import {
   errorCliMessage,
   successCliMessage,
   tryingCliMessage,
-} from './src/cli/cli.js';
-import FileInteractions from './src/file-interactions.js';
-import { Webflow } from '../classes/Webflow.js';
+} from '../CLI/index.js';
+import FileInteractions from '../classes/FileInteractions.js';
+import Webflow from '../classes/webflow/Webflow.js';
 
 const __dirname = import.meta.dirname;
-const rootPath = path.resolve(__dirname, 'webflow');
+const rootPath = path.resolve(import.meta.dirname, 'webflow');
 
 const pages = await displayLogoAndDisplayQuestions(
   'Webflow Push',

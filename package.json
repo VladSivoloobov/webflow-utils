@@ -9,7 +9,8 @@
     "pull": "node ./src/scripts/pull.js",
     "push": "node ./src/scripts/push.js",
     "utils": "node ./src/scripts/utils.js",
-    "server": "node ./src/server.js"
+    "server": "node ./src/server.js",
+    "delete-links": "node ./src/scripts/delete-links.js"
   },
   "keywords": [],
   "author": "",

@@ -78,68 +78,75 @@ if (pages !== '*') {
   }
 }
 
-for (const page of filteredPages) {
-  const id = page['_id'];
-
-  const progress = ((processedPages / filteredPages.length) * 100).toFixed(2);
-  const pageName = getPageName(id);
-
-  tryingCliMessage('Попытка получить страницу', progress, pageName);
-
-  const pageResponse = await webflow.pages.get({ pageId: id });
-
-  if (pageResponse.status === 200) {
-    successCliMessage('Страница была получена', progress, pageName);
-  } else {
-    errorCliMessage(
-      'Страница не была получена',
-      progress,
-      `${pageName} - ${pageResponse.status} ${pageResponse.statusText}`
-    );
+function chunkArray(array, chunkSize) {
+  const chunks = [];
+  for (let i = 0; i < array.length; i += chunkSize) {
+    chunks.push(array.slice(i, i + chunkSize));
   }
+  return chunks;
+}
 
-  const gettedPage = await pageResponse.json();
+const pageChunks = chunkArray(filteredPages, 5);
 
-  const pageFolderPath = path.resolve(mainPath, pageName);
+for (const chunk of pageChunks) {
+  await Promise.all(chunk.map(async (page) => {
+    const id = page['_id'];
+    const pageName = getPageName(id);
+    const progress = ((processedPages / filteredPages.length) * 100).toFixed(2);
 
-  if (!fs.existsSync(pageFolderPath)) {
-    fs.mkdirSync(pageFolderPath);
-  }
+    tryingCliMessage('Попытка получить страницу', progress, pageName);
 
-  fs.writeFileSync(
-    path.resolve(pageFolderPath, 'dom.json'),
-    JSON.stringify(gettedPage, false, 2)
-  );
+    const pageResponse = await webflow.pages.get({ pageId: id });
 
-  const embeds = [];
-
-  gettedPage.domNodes.forEach((domNode, index) => {
-    if (domNode.type === 'HtmlEmbed') {
-      embeds.push({ index, domNode });
+    if (pageResponse.status === 200) {
+      successCliMessage('Страница была получена', progress, pageName);
+    } else {
+      errorCliMessage(
+        'Страница не была получена',
+        progress,
+        `${pageName} - ${pageResponse.status} ${pageResponse.statusText}`
+      );
+      return;
     }
-  });
 
-  fs.writeFileSync(
-    path.resolve(pageFolderPath, 'dom.spec.json'),
-    JSON.stringify(
-      embeds.map((elem, index) => ({
-        index: elem.index,
-        fileName: `${index}.html`,
-        id,
-      })),
-      null,
-      2
-    )
-  );
+    const gettedPage = await pageResponse.json();
+    const pageFolderPath = path.resolve(mainPath, pageName);
 
-  embeds.forEach((embed, index) => {
+    if (!fs.existsSync(pageFolderPath)) {
+      fs.mkdirSync(pageFolderPath);
+    }
+
+    fs.writeFileSync(
+      path.resolve(pageFolderPath, 'dom.json'),
+      JSON.stringify(gettedPage, false, 2)
+    );
+
+    const embeds = gettedPage.domNodes
+      .map((node, index) => node.type === 'HtmlEmbed' ? { index, domNode: node } : null)
+      .filter(Boolean);
+
+    fs.writeFileSync(
+      path.resolve(pageFolderPath, 'dom.spec.json'),
+      JSON.stringify(
+        embeds.map((elem, index) => ({
+          index: elem.index,
+          fileName: `${index}.html`,
+          id,
+        })),
+        null,
+        2
+      )
+    );
+
     const embedPath = path.resolve(pageFolderPath, 'embeds');
-
     if (!fs.existsSync(embedPath)) {
       fs.mkdirSync(embedPath);
     }
-    fs.writeFileSync(path.resolve(embedPath, `${index}.html`), embed.domNode.v);
-  });
 
-  processedPages++;
+    embeds.forEach((embed, index) => {
+      fs.writeFileSync(path.resolve(embedPath, `${index}.html`), embed.domNode.v);
+    });
+
+    processedPages++;
+  }));
 }
